@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from app import models  # noqa: F401  (registers tables on Base.metadata)
 from app.database import Base, engine
@@ -17,6 +18,11 @@ app = FastAPI(title="Task Manager API", version="1.0.0", lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(tasks.router)
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health", tags=["meta"])
